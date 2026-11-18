@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Tri Ân 20/11 - Cao học Vật lý Lý thuyết & Vật lý Toán K32</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML2Canvas để xuất thiệp thành ảnh PNG chất lượng cao -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts: Playfair Display (Sang trọng), Montserrat (Hiện đại), Dancing Script (Thư pháp mềm mại) -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                        script: ['"Dancing Script"', 'cursive'],
+                    },
+                    colors: {
+                        navyDeep: '#0B132B',
+                        navyLight: '#1C2541',
+                        goldPrimary: '#D4AF37',
+                        goldLight: '#F3E5AB',
+                        emeraldDeep: '#0F2922',
+                        burgundyDeep: '#2C0E18',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Hiệu ứng ánh kim vàng cho chữ (nền tối) */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA8218 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hiệu ứng ánh xanh/bạc quang học */
+        .text-cyan-gradient {
+            background: linear-gradient(135deg, #E0F2FE 0%, #38BDF8 50%, #0284C7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hiệu ứng chữ cho nền sáng (Cổ điển / Tối giản) */
+        .text-classic-gradient {
+            background: linear-gradient(135deg, #78350F 0%, #B45309 50%, #451A03 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hiệu ứng bóng đổ mượt mà cho thiệp */
+        .card-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Thanh điều hướng & Công cụ -->
+    <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
+                    20/11
+                </div>
+                <div>
+                    <h1 class="text-white font-serif font-bold text-base sm:text-lg tracking-wide">Studio Thiết Kế Thiệp Tri Ân</h1>
+                    <p class="text-slate-400 text-xs">Lớp Cao học Vật lý Lý thuyết & Vật lý Toán - Khóa 32</p>
+                </div>
+            </div>
+
+            <!-- Bộ chọn Thiệp -->
+            <div class="flex items-center bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+                <button id="btn-card-1" onclick="selectCard(1)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md">
+                    1. Thiệp Thầy Nguyễn Thành Tiên
+                </button>
+                <button id="btn-card-2" onclick="selectCard(2)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 text-slate-300 hover:text-white">
+                    2. Thiệp Thầy Huỳnh Anh Huy
+                </button>
+            </div>
+
+            <!-- Nút Tải Ảnh -->
+            <button onclick="downloadCard()" id="download-btn" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-900/30 active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Tải Ảnh Thiệp (PNG)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Khu vực chính: Xem trước Thiệp & Bảng chỉnh sửa -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Cột trái: Khu vực hiển thị Thiệp (8 cột trên desktop) -->
+        <div class="lg:col-span-8 flex flex-col items-center justify-center bg-slate-800/40 rounded-3xl p-4 sm:p-8 border border-slate-700/50">
+            
+            <div class="mb-4 flex items-center justify-between w-full max-w-2xl text-xs text-slate-400">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Bản xem trước chuẩn in ấn & gửi điện tử (Tỷ lệ 4:5)
+                </span>
+                <span id="theme-badge" class="px-2.5 py-1 rounded-full bg-slate-800 text-amber-400 border border-amber-500/20">
+                    Chủ đề: Vũ Trụ Lượng Tử & Ánh Kim
+                </span>
+            </div>
+
+            <!-- KHUNG THIỆP CHÍNH (Sẽ được chụp lại để xuất ảnh) -->
+            <div id="greeting-card" class="relative w-full max-w-[600px] aspect-[4/5] rounded-2xl overflow-hidden card-shadow transition-all duration-500 select-none bg-[#0B132B] text-white flex flex-col justify-between p-6 sm:p-10">
+                
+                <!-- Họa tiết nền Vector động theo từng phong cách Vật lý -->
+                <div id="card-svg-layer" class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500"></div>
+
+                <!-- Khung viền kép nghệ thuật bên trong -->
+                <div id="card-border-outer" class="absolute inset-3 sm:inset-4 border border-amber-400/40 rounded-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="card-border-inner" class="absolute inset-4 sm:inset-5 border border-amber-300/20 rounded-lg pointer-events-none transition-colors duration-500"></div>
+
+                <!-- Góc trang trí hoa văn tinh tế -->
+                <div id="corner-tl" class="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-400 rounded-tl-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-tr" class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-400 rounded-tr-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-bl" class="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-br" class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-xl pointer-events-none transition-colors duration-500"></div>
+
+                <!-- PHẦN 1: HEADER THIỆP -->
+                <div class="relative z-10 text-center pt-2">
+                    <div id="card-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 mb-2 transition-colors duration-500">
+                        <span id="card-pill-text" class="text-amber-300 text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase">Chào Mừng Ngày Nhà Giáo Việt Nam</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-3">
+                        <span id="card-line-l" class="h-[1px] w-8 sm:w-12 bg-gradient-to-r from-transparent to-amber-400"></span>
+                        <h2 id="card-date" class="font-serif text-3xl sm:text-4xl font-bold text-gold-gradient tracking-wider">20 • 11</h2>
+                        <span id="card-line-r" class="h-[1px] w-8 sm:w-12 bg-gradient-to-l from-transparent to-amber-400"></span>
+                    </div>
+                    <p id="card-subtitle" class="font-script text-xl sm:text-2xl text-amber-200/90 mt-1 transition-colors duration-500">Tri Ân Người Dẫn Đường Tri Thức</p>
+                </div>
+
+                <!-- PHẦN 2: KÍNH TẶNG & LỜI CHÚC CHÍNH -->
+                <div class="relative z-10 my-auto py-3 px-2 sm:px-4 flex flex-col justify-center">
+                    <div class="text-center mb-3">
+                        <p id="card-salutation" class="text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1 transition-colors duration-500">Kính gửi Thầy:</p>
+                        <h3 id="card-recipient" class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 tracking-wide drop-shadow transition-colors duration-500">
+                            Thầy Nguyễn Thành Tiên
+                        </h3>
+                        <div id="card-divider" class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-2"></div>
+                    </div>
+
+                    <!-- Khung nội dung lời chúc -->
+                    <div id="card-message-box" class="bg-white/5 backdrop-blur-[2px] border border-amber-200/15 rounded-xl p-4 sm:p-5 shadow-inner transition-colors duration-500">
+                        <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light indent-6 transition-colors duration-500">
+                            Nhân ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin gửi đến Thầy lời tri ân sâu sắc và chân thành nhất. Chúng em vô cùng trân quý sự nhiệt huyết của Thầy trong từng bài giảng, cách Thầy tận tâm tổ chức các buổi báo cáo nhóm và kiên nhẫn chỉnh sửa, hướng dẫn cho chúng em từ những lỗi nhỏ nhất trong từng công thức, lập luận. Sự nghiêm túc và tâm huyết của Thầy chính là ngọn lửa truyền cảm hứng giúp chúng em vững bước trên con đường nghiên cứu khoa học. Kính chúc Thầy luôn dồi dào sức khỏe, hạnh phúc và gặt hái nhiều thành công mới!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- PHẦN 3: CHỮ KÝ TẬP THỂ LỚP -->
+                <div class="relative z-10 text-center pb-1">
+                    <p id="card-closing" class="text-[11px] sm:text-xs text-amber-200/80 italic mb-1 transition-colors duration-500">Kính chúc Thầy một mùa Hiến chương trọn vẹn niềm vui!</p>
+                    <p id="card-signature" class="font-serif font-bold text-xs sm:text-sm tracking-wider uppercase text-gold-gradient">
+                        Tập thể Lớp Cao học Vật lý Lý thuyết & Vật lý Toán - Khóa 32
+                    </p>
+                    <p id="card-year" class="text-[10px] text-slate-400 tracking-widest uppercase mt-0.5 transition-colors duration-500">Tháng 11 • Năm 2026</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Bảng điều khiển & Tùy chỉnh nội dung (4 cột trên desktop) -->
+        <div class="lg:col-span-4 bg-slate-800/80 backdrop-blur-md rounded-3xl p-6 border border-slate-700 text-slate-200 flex flex-col gap-5">
+            <div>
+                <h2 class="text-lg font-serif font-bold text-white flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Bộ Sưu Tập 12 Mẫu Thiệp Vật Lý
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Chọn phong cách đồ họa bên dưới, mỗi mẫu đều có họa tiết chuyên ngành và bảng màu riêng.</p>
+            </div>
+
+            <!-- Bộ chọn 12 phong cách nghệ thuật Vật lý -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">1. Chọn phong cách thiết kế</label>
+                    <span class="text-[11px] text-amber-400 font-medium">12 mẫu đặc sắc</span>
+                </div>
+                <div id="theme-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 max-h-[250px] overflow-y-auto pr-1">
+                    <!-- Danh sách 12 mẫu được render tự động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Chỉnh sửa Tên & Học vị Thầy -->
+            <div>
+                <label for="input-recipient" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">2. Danh xưng & Họ tên Thầy</label>
+                <input type="text" id="input-recipient" oninput="updateCardText()" 
+                    class="w-full bg-slate-900/90 border border-slate-600 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400 transition-colors"
+                    value="Thầy Nguyễn Thành Tiên">
+                <p class="text-[11px] text-slate-400 mt-1 italic">* Gợi ý: Có thể thêm học hàm/học vị (VD: PGS.TS., TS., ThS...)</p>
+            </div>
+
+            <!-- Chỉnh sửa Lời chúc -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label for="input-message" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">3. Lời tri ân gửi Thầy</label>
+                    <button onclick="resetCurrentMessage()" class="text-[11px] text-amber-400 hover:underline">Khôi phục mẫu gốc</button>
+                </div>
+                <textarea id="input-message" rows="7" oninput="updateCardText()"
+                    class="w-full bg-slate-900/90 border border-slate-600 rounded-xl p-3.5 text-xs sm:text-sm leading-relaxed text-slate-100 focus:outline-none focus:border-amber-400 transition-colors"></textarea>
+            </div>
+
+            <!-- Thông báo trạng thái -->
+            <div id="toast-box" class="hidden rounded-xl p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 text-xs flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span id="toast-text">Đã tải ảnh thiệp thành công!</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Kho 12 phong cách thiết kế mang đậm dấu ấn Vật lý Lý thuyết & Vật lý Toán
+        const cardStyles = {
+            navy: {
+                name: "1. Vũ Trụ Lượng Tử",
+                tag: "Ánh Kim & Đêm Xanh",
+                previewBg: "linear-gradient(135deg, #1C2541, #0B132B)",
+                swatchColor: "#D4AF37",
+                cardBg: "radial-gradient(circle at top right, #1C2541, #0B132B 75%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "quantum"
+            },
+            emerald: {
+                name: "2. Lục Bảo Tri Thức",
+                tag: "Sóng Hàm & Lục Bảo",
+                previewBg: "linear-gradient(135deg, #1B4332, #081C15)",
+                swatchColor: "#34D399",
+                cardBg: "radial-gradient(circle at top right, #1B4332, #081C15 75%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "wave"
+            },
+            spacetime: {
+                name: "3. Lưới Không-Thời Gian",
+                tag: "Thuyết Tương Đối Rộng",
+                previewBg: "linear-gradient(135deg, #1E1B4B, #090D16)",
+                swatchColor: "#38BDF8",
+                cardBg: "radial-gradient(circle at center, #1E1B4B 0%, #090D16 80%)",
+                isLight: false,
+                accent: "cyan",
+                dateClass: "text-cyan-gradient",
+                svgType: "spacetime"
+            },
+            chalkboard: {
+                name: "4. Bảng Đen Phấn Trắng",
+                tag: "Kinh Điển Giảng Đường",
+                previewBg: "linear-gradient(135deg, #27372B, #162119)",
+                swatchColor: "#F8FAFC",
+                cardBg: "radial-gradient(circle at top left, #28382C 0%, #151E17 85%)",
+                isLight: false,
+                accent: "chalk",
+                dateClass: "text-white",
+                svgType: "chalkboard"
+            },
+            feynman: {
+                name: "5. Giản Đồ Feynman",
+                tag: "Điện Động Lực Lượng Tử",
+                previewBg: "linear-gradient(135deg, #311042, #12071A)",
+                swatchColor: "#F472B6",
+                cardBg: "radial-gradient(circle at bottom right, #3B1252 0%, #110619 75%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "feynman"
+            },
+            parchment: {
+                name: "6. Bản Thảo Cổ Điển",
+                tag: "Giấy Da & Mực Nâu",
+                previewBg: "linear-gradient(135deg, #F5E6CA, #E6CCB2)",
+                swatchColor: "#78350F",
+                cardBg: "radial-gradient(circle at center, #FDF8EE 0%, #EBD9B4 100%)",
+                isLight: true,
+                accent: "classic",
+                dateClass: "text-classic-gradient",
+                svgType: "geometry"
+            },
+            blueprint: {
+                name: "7. Bản Vẽ Vật Lý Toán",
+                tag: "Xanh Kỹ Thuật Hiện Đại",
+                previewBg: "linear-gradient(135deg, #0369A1, #0C4A6E)",
+                swatchColor: "#BAE6FD",
+                cardBg: "radial-gradient(circle at top right, #0284C7 0%, #082F49 85%)",
+                isLight: false,
+                accent: "cyan",
+                dateClass: "text-cyan-gradient",
+                svgType: "blueprint"
+            },
+            fractal: {
+                name: "8. Tỷ Lệ Vàng & Fractal",
+                tag: "Xoắn Ốc Fibonacci",
+                previewBg: "linear-gradient(135deg, #292524, #0C0A09)",
+                swatchColor: "#F59E0B",
+                cardBg: "radial-gradient(circle at center, #292524 0%, #0C0A09 80%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "golden"
+            },
+            burgundy: {
+                name: "9. Đỏ Vang Tâm Huyết",
+                tag: "Sang Trọng & Ấm Áp",
+                previewBg: "linear-gradient(135deg, #4A1525, #1F070E)",
+                swatchColor: "#FB7185",
+                cardBg: "radial-gradient(circle at top right, #4A1525, #1F070E 75%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "quantum"
+            },
+            minimalist: {
+                name: "10. Trắng Sứ Tối Giản",
+                tag: "Tinh Tế & Thanh Lịch",
+                previewBg: "linear-gradient(135deg, #FFFFFF, #E2E8F0)",
+                swatchColor: "#0F172A",
+                cardBg: "linear-gradient(160deg, #FFFFFF 0%, #F1F5F9 100%)",
+                isLight: true,
+                accent: "navyLight",
+                dateClass: "text-slate-900",
+                svgType: "minimal"
+            },
+            aurora: {
+                name: "11. Quang Phổ Cực Quang",
+                tag: "Vật Lý Quang Học",
+                previewBg: "linear-gradient(135deg, #064E3B, #1E1B4B)",
+                swatchColor: "#2DD4BF",
+                cardBg: "linear-gradient(135deg, #042F2E 0%, #0F172A 50%, #1E1B4B 100%)",
+                isLight: false,
+                accent: "cyan",
+                dateClass: "text-cyan-gradient",
+                svgType: "prism"
+            },
+            relativity: {
+                name: "12. Chân Trời Sự Kiện",
+                tag: "Hố Đen & Nhật Thực",
+                previewBg: "linear-gradient(135deg, #431407, #09090B)",
+                swatchColor: "#FB923C",
+                cardBg: "radial-gradient(circle at 50% 42%, #7C2D12 0%, #18181B 45%, #09090B 85%)",
+                isLight: false,
+                accent: "amber",
+                dateClass: "text-gold-gradient",
+                svgType: "blackhole"
+            }
+        };
+
+        // Hàm tạo họa tiết SVG chuyên ngành Vật lý tương ứng với từng phong cách
+        function getPhysicsSVG(type, strokeColor) {
+            const commonAttrs = `class="w-full h-full opacity-20" viewBox="0 0 600 750" fill="none" xmlns="http://www.w3.org/2000/svg"`;
+            switch (type) {
+                case 'quantum':
+                    return `<svg ${commonAttrs}>
+                        <ellipse cx="300" cy="375" rx="260" ry="90" transform="rotate(-30 300 375)" stroke="${strokeColor}" stroke-width="1.2" stroke-dasharray="4 4"/>
+                        <ellipse cx="300" cy="375" rx="260" ry="90" transform="rotate(30 300 375)" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <ellipse cx="300" cy="375" rx="260" ry="90" transform="rotate(90 300 375)" stroke="${strokeColor}" stroke-width="0.8" stroke-dasharray="8 6"/>
+                        <circle cx="300" cy="375" r="180" stroke="${strokeColor}" stroke-width="0.6"/>
+                        <text x="45" y="130" fill="${strokeColor}" font-family="serif" font-size="22" font-style="italic">iℏ ∂ψ/∂t = Ĥψ</text>
+                        <text x="415" y="160" fill="${strokeColor}" font-family="serif" font-size="19" font-style="italic">R_μν - ½Rg_μν = κT_μν</text>
+                        <text x="55" y="680" fill="${strokeColor}" font-family="serif" font-size="21" font-style="italic">∮ E·dA = Q/ε₀</text>
+                        <text x="435" y="660" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">∇ × B = μ₀J</text>
+                    </svg>`;
+                case 'wave':
+                    return `<svg ${commonAttrs}>
+                        <path d="M0 160 Q 75 100, 150 160 T 300 160 T 450 160 T 600 160" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <path d="M0 180 Q 75 120, 150 180 T 300 180 T 450 180 T 600 180" stroke="${strokeColor}" stroke-width="0.8" stroke-dasharray="5 5"/>
+                        <path d="M0 610 Q 75 540, 150 610 T 300 610 T 450 610 T 600 610" stroke="${strokeColor}" stroke-width="1.8"/>
+                        <path d="M0 630 Q 75 560, 150 630 T 300 630 T 450 630 T 600 630" stroke="${strokeColor}" stroke-width="1"/>
+                        <text x="50" y="110" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">Ψ(x,t) = A e^{i(kx - ωt)}</text>
+                        <text x="380" y="685" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">Δx · Δp ≥ ℏ/2</text>
+                    </svg>`;
+                case 'spacetime':
+                    return `<svg ${commonAttrs}>
+                        <path d="M40 520 Q 300 670 560 520" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <path d="M40 560 Q 300 710 560 560" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <path d="M40 600 Q 300 750 560 600" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <path d="M120 490 Q 170 610 140 710" stroke="${strokeColor}" stroke-width="1"/>
+                        <path d="M240 500 Q 260 630 250 720" stroke="${strokeColor}" stroke-width="1"/>
+                        <path d="M360 500 Q 340 630 350 720" stroke="${strokeColor}" stroke-width="1"/>
+                        <path d="M480 490 Q 430 610 460 710" stroke="${strokeColor}" stroke-width="1"/>
+                        <circle cx="300" cy="540" r="32" stroke="${strokeColor}" stroke-width="1.5" stroke-dasharray="3 3"/>
+                        <text x="50" y="120" fill="${strokeColor}" font-family="serif" font-size="21" font-style="italic">ds² = g_μν dx^μ dx^ν</text>
+                        <text x="410" y="145" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">G_μν + Λg_μν = 8πT_μν</text>
+                    </svg>`;
+                case 'chalkboard':
+                    return `<svg ${commonAttrs}>
+                        <text x="45" y="120" fill="${strokeColor}" font-family="serif" font-size="22" font-style="italic">L = T - V</text>
+                        <text x="390" y="135" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">d/dt(∂L/∂q̇) - ∂L/∂q = 0</text>
+                        <text x="50" y="655" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">S = ∫ L(q, q̇, t) dt</text>
+                        <text x="415" y="675" fill="${strokeColor}" font-family="serif" font-size="21" font-style="italic">∇²φ = 4πGρ</text>
+                        <line x1="45" y1="145" x2="220" y2="145" stroke="${strokeColor}" stroke-width="1" stroke-dasharray="6 4"/>
+                        <circle cx="510" cy="590" r="45" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <line x1="510" y1="590" x2="545" y2="560" stroke="${strokeColor}" stroke-width="1.2"/>
+                    </svg>`;
+                case 'feynman':
+                    return `<svg ${commonAttrs}>
+                        <line x1="60" y1="110" x2="150" y2="170" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <line x1="60" y1="230" x2="150" y2="170" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <path d="M150 170 Q 165 155 180 170 T 210 170 T 240 170 T 270 170" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <line x1="270" y1="170" x2="350" y2="110" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <line x1="270" y1="170" x2="350" y2="230" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <circle cx="480" cy="620" r="55" stroke="${strokeColor}" stroke-width="1.3" stroke-dasharray="5 5"/>
+                        <path d="M360 620 L425 620 M535 620 L580 620" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <text x="65" y="660" fill="${strokeColor}" font-family="serif" font-size="21" font-style="italic">ℒ_QED = ψ̄(iγ^μ D_μ - m)ψ - ¼F_μν F^μν</text>
+                    </svg>`;
+                case 'geometry':
+                case 'golden':
+                    return `<svg ${commonAttrs}>
+                        <rect x="90" y="130" width="420" height="490" stroke="${strokeColor}" stroke-width="1"/>
+                        <path d="M510 620 A 420 420 0 0 1 90 200" stroke="${strokeColor}" stroke-width="1.4"/>
+                        <path d="M90 200 A 260 260 0 0 1 350 460" stroke="${strokeColor}" stroke-width="1.4"/>
+                        <path d="M350 460 A 160 160 0 0 1 190 300" stroke="${strokeColor}" stroke-width="1.4"/>
+                        <circle cx="300" cy="375" r="210" stroke="${strokeColor}" stroke-width="0.9" stroke-dasharray="4 4"/>
+                        <text x="100" y="115" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">φ = (1 + √5) / 2 ≈ 1.6180339887...</text>
+                        <text x="360" y="665" fill="${strokeColor}" font-family="serif" font-size="22" font-style="italic">e^{iπ} + 1 = 0</text>
+                    </svg>`;
+                case 'blueprint':
+                    return `<svg ${commonAttrs}>
+                        <defs>
+                            <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+                                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="${strokeColor}" stroke-width="0.5"/>
+                            </pattern>
+                        </defs>
+                        <rect width="600" height="750" fill="url(#gridPattern)"/>
+                        <circle cx="300" cy="375" r="220" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <line x1="50" y1="375" x2="550" y2="375" stroke="${strokeColor}" stroke-width="0.8" stroke-dasharray="6 3"/>
+                        <line x1="300" y1="100" x2="300" y2="650" stroke="${strokeColor}" stroke-width="0.8" stroke-dasharray="6 3"/>
+                        <text x="55" y="125" fill="${strokeColor}" font-family="monospace" font-size="16">FIG 20.11 // MATHEMATICAL PHYSICS</text>
+                        <text x="380" y="675" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">∮_∂Ω ω = ∫_Ω dω</text>
+                    </svg>`;
+                case 'prism':
+                    return `<svg ${commonAttrs}>
+                        <polygon points="300,150 180,360 420,360" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <line x1="40" y1="290" x2="235" y2="265" stroke="${strokeColor}" stroke-width="2"/>
+                        <line x1="365" y1="265" x2="560" y2="210" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <line x1="372" y1="275" x2="560" y2="255" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <line x1="378" y1="285" x2="560" y2="300" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <line x1="384" y1="295" x2="560" y2="345" stroke="${strokeColor}" stroke-width="1.2"/>
+                        <text x="65" y="660" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">E = hν = hc / λ</text>
+                        <text x="395" y="660" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">n₁ sinθ₁ = n₂ sinθ₂</text>
+                    </svg>`;
+                case 'blackhole':
+                    return `<svg ${commonAttrs}>
+                        <circle cx="300" cy="330" r="95" stroke="${strokeColor}" stroke-width="2"/>
+                        <ellipse cx="300" cy="330" rx="250" ry="48" transform="rotate(-12 300 330)" stroke="${strokeColor}" stroke-width="1.5"/>
+                        <ellipse cx="300" cy="330" rx="210" ry="35" transform="rotate(-12 300 330)" stroke="${strokeColor}" stroke-width="0.9" stroke-dasharray="6 4"/>
+                        <text x="60" y="130" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">R_s = 2GM / c²</text>
+                        <text x="390" y="670" fill="${strokeColor}" font-family="serif" font-size="20" font-style="italic">S_BH = (k_B c³ A) / (4 G ℏ)</text>
+                    </svg>`;
+                default: // minimal
+                    return `<svg ${commonAttrs}>
+                        <circle cx="300" cy="375" r="240" stroke="${strokeColor}" stroke-width="0.9"/>
+                        <circle cx="300" cy="375" r="232" stroke="${strokeColor}" stroke-width="0.4" stroke-dasharray="3 3"/>
+                        <text x="245" y="115" fill="${strokeColor}" font-family="serif" font-size="22" font-style="italic">∑ F = ma</text>
+                        <text x="235" y="675" fill="${strokeColor}" font-family="serif" font-size="22" font-style="italic">E = mc²</text>
+                    </svg>`;
+            }
+        }
+
+        // Dữ liệu nội dung 2 thiệp được biên soạn riêng biệt, giàu cảm xúc và sát với chuyên ngành Vật lý
+        const cardsData = {
+            1: {
+                recipient: "Thầy Nguyễn Thành Tiên",
+                theme: "navy",
+                message: "Nhân ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin gửi đến Thầy lời tri ân sâu sắc và chân thành nhất. Chúng em vô cùng trân quý sự nhiệt huyết của Thầy trong từng bài giảng, cách Thầy tận tâm tổ chức các buổi báo cáo nhóm và kiên nhẫn chỉnh sửa, hướng dẫn cho chúng em từ những lỗi nhỏ nhất trong từng công thức, lập luận. Sự nghiêm túc và tâm huyết của Thầy chính là ngọn lửa truyền cảm hứng giúp chúng em vững bước trên con đường nghiên cứu khoa học. Kính chúc Thầy luôn dồi dào sức khỏe, hạnh phúc và gặt hái nhiều thành công mới!"
+            },
+            2: {
+                recipient: "Thầy Huỳnh Anh Huy",
+                theme: "emerald",
+                message: "Nhân dịp kỷ niệm ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin kính gửi đến Thầy những lời chúc tốt đẹp và lòng biết ơn chân thành nhất. Cảm ơn Thầy đã luôn đồng hành, nhiệt tình truyền đạt kiến thức, tạo điều kiện cho chúng em rèn luyện qua từng buổi báo cáo nhóm và tỉ mỉ chỉ bảo, uốn nắn từng chi tiết nhỏ nhất để chúng em hoàn thiện mỗi ngày. Bài học về sự chuẩn xác và niềm đam mê Vật lý từ Thầy sẽ mãi là hành trang quý giá của chúng em. Kính chúc Thầy thật nhiều sức khỏe, bình an và luôn giữ mãi ngọn lửa nhiệt huyết với sự nghiệp trồng người!"
+            }
+        };
+
+        let currentCardId = 1;
+
+        // Render danh sách 12 nút chọn phong cách
+        function renderThemeButtons() {
+            const grid = document.getElementById('theme-grid');
+            grid.innerHTML = '';
+
+            Object.entries(cardStyles).forEach(([key, style]) => {
+                const btn = document.createElement('button');
+                btn.id = `theme-${key}`;
+                btn.onclick = () => changeTheme(key);
+                btn.className = "p-2.5 rounded-xl border border-slate-600/80 hover:border-amber-400/60 flex items-center gap-2.5 text-left transition-all bg-slate-900/60";
+                
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg shrink-0 border border-white/25 shadow-inner flex items-center justify-center" style="background: ${style.previewBg}">
+                        <span class="w-2 h-2 rounded-full" style="background-color: ${style.swatchColor}"></span>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[11px] font-semibold text-slate-100 truncate">${style.name}</div>
+                        <div class="text-[9px] text-slate-400 truncate">${style.tag}</div>
+                    </div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        // Khởi tạo giao diện ban đầu
+        window.onload = function() {
+            renderThemeButtons();
+            selectCard(1);
+        };
+
+        // Chuyển đổi giữa Thiệp 1 và Thiệp 2
+        function selectCard(id) {
+            currentCardId = id;
+            const data = cardsData[id];
+
+            // Cập nhật trạng thái nút bấm trên Header
+            const btn1 = document.getElementById('btn-card-1');
+            const btn2 = document.getElementById('btn-card-2');
+
+            if (id === 1) {
+                btn1.className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md";
+                btn2.className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 text-slate-300 hover:text-white";
+            } else {
+                btn2.className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md";
+                btn1.className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 text-slate-300 hover:text-white";
+            }
+
+            // Điền dữ liệu vào ô nhập liệu và thiệp
+            document.getElementById('input-recipient').value = data.recipient;
+            document.getElementById('input-message').value = data.message;
+            
+            updateCardText();
+            changeTheme(data.theme);
+        }
+
+        // Cập nhật nội dung từ ô nhập liệu lên Thiệp theo thời gian thực
+        function updateCardText() {
+            const recipientVal = document.getElementById('input-recipient').value;
+            const messageVal = document.getElementById('input-message').value;
+
+            document.getElementById('card-recipient').textContent = recipientVal || "Kính tặng Thầy";
+            document.getElementById('card-message').textContent = messageVal;
+            
+            cardsData[currentCardId].recipient = recipientVal;
+            cardsData[currentCardId].message = messageVal;
+        }
+
+        // Khôi phục lời chúc gốc
+        function resetCurrentMessage() {
+            const defaults = {
+                1: {
+                    recipient: "Thầy Nguyễn Thành Tiên",
+                    message: "Nhân ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin gửi đến Thầy lời tri ân sâu sắc và chân thành nhất. Chúng em vô cùng trân quý sự nhiệt huyết của Thầy trong từng bài giảng, cách Thầy tận tâm tổ chức các buổi báo cáo nhóm và kiên nhẫn chỉnh sửa, hướng dẫn cho chúng em từ những lỗi nhỏ nhất trong từng công thức, lập luận. Sự nghiêm túc và tâm huyết của Thầy chính là ngọn lửa truyền cảm hứng giúp chúng em vững bước trên con đường nghiên cứu khoa học. Kính chúc Thầy luôn dồi dào sức khỏe, hạnh phúc và gặt hái nhiều thành công mới!"
+                },
+                2: {
+                    recipient: "Thầy Huỳnh Anh Huy",
+                    message: "Nhân dịp kỷ niệm ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin kính gửi đến Thầy những lời chúc tốt đẹp và lòng biết ơn chân thành nhất. Cảm ơn Thầy đã luôn đồng hành, nhiệt tình truyền đạt kiến thức, tạo điều kiện cho chúng em rèn luyện qua từng buổi báo cáo nhóm và tỉ mỉ chỉ bảo, uốn nắn từng chi tiết nhỏ nhất để chúng em hoàn thiện mỗi ngày. Bài học về sự chuẩn xác và niềm đam mê Vật lý từ Thầy sẽ mãi là hành trang quý giá của chúng em. Kính chúc Thầy thật nhiều sức khỏe, bình an và luôn giữ mãi ngọn lửa nhiệt huyết với sự nghiệp trồng người!"
+                }
+            };
+            
+            document.getElementById('input-recipient').value = defaults[currentCardId].recipient;
+            document.getElementById('input-message').value = defaults[currentCardId].message;
+            updateCardText();
+            showToast("Đã khôi phục nội dung lời chúc mẫu gốc!");
+        }
+
+        // Áp dụng phong cách thiết kế cho thiệp
+        function changeTheme(themeKey) {
+            const style = cardStyles[themeKey] || cardStyles.navy;
+            const card = document.getElementById('greeting-card');
+            const badge = document.getElementById('theme-badge');
+            cardsData[currentCardId].theme = themeKey;
+
+            // Highlight nút đang chọn
+            Object.keys(cardStyles).forEach(k => {
+                const btn = document.getElementById(`theme-${k}`);
+                if (!btn) return;
+                if (k === themeKey) {
+                    btn.classList.remove('border-slate-600/80', 'bg-slate-900/60');
+                    btn.classList.add('border-2', 'border-amber-400', 'bg-slate-800', 'shadow-md');
+                } else {
+                    btn.classList.remove('border-2', 'border-amber-400', 'bg-slate-800', 'shadow-md');
+                    btn.classList.add('border', 'border-slate-600/80', 'bg-slate-900/60');
+                }
+            });
+
+            // Cập nhật nền thiệp & nhãn
+            card.style.background = style.cardBg;
+            badge.textContent = `Mẫu: ${style.name} (${style.tag})`;
+
+            // Cập nhật SVG nền Vật lý
+            document.getElementById('card-svg-layer').innerHTML = getPhysicsSVG(style.svgType, style.swatchColor);
+
+            // Đồng bộ màu sắc chữ, viền, khung nội dung theo nền sáng hoặc nền tối
+            const borderOuter = document.getElementById('card-border-outer');
+            const borderInner = document.getElementById('card-border-inner');
+            const corners = ['corner-tl', 'corner-tr', 'corner-bl', 'corner-br'].map(id => document.getElementById(id));
+            const pill = document.getElementById('card-pill');
+            const pillText = document.getElementById('card-pill-text');
+            const dateEl = document.getElementById('card-date');
+            const subtitle = document.getElementById('card-subtitle');
+            const salutation = document.getElementById('card-salutation');
+            const recipient = document.getElementById('card-recipient');
+            const msgBox = document.getElementById('card-message-box');
+            const msgText = document.getElementById('card-message');
+            const closing = document.getElementById('card-closing');
+            const signature = document.getElementById('card-signature');
+            const yearEl = document.getElementById('card-year');
+
+            dateEl.className = `font-serif text-3xl sm:text-4xl font-bold tracking-wider ${style.dateClass}`;
+
+            if (style.isLight) {
+                // Giao diện nền sáng (Bản Thảo Cổ Điển / Trắng Sứ Tối Giản)
+                const isClassic = style.accent === 'classic';
+                const borderColor = isClassic ? 'border-amber-800/40' : 'border-slate-800/30';
+                const cornerColor = isClassic ? 'border-amber-800' : 'border-slate-800';
+
+                borderOuter.className = `absolute inset-3 sm:inset-4 border ${borderColor} rounded-xl pointer-events-none transition-colors duration-500`;
+                borderInner.className = `absolute inset-4 sm:inset-5 border ${borderColor} rounded-lg pointer-events-none transition-colors duration-500`;
+                corners.forEach((c, idx) => {
+                    const pos = ['top-3 left-3 border-t-2 border-l-2 rounded-tl-xl', 'top-3 right-3 border-t-2 border-r-2 rounded-tr-xl', 'bottom-3 left-3 border-b-2 border-l-2 rounded-bl-xl', 'bottom-3 right-3 border-b-2 border-r-2 rounded-br-xl'][idx];
+                    c.className = `absolute ${pos} ${cornerColor} w-8 h-8 pointer-events-none transition-colors duration-500`;
+                });
+
+                pill.className = `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isClassic ? 'bg-amber-900/10 border-amber-800/30' : 'bg-slate-900/5 border-slate-800/20'} border mb-2`;
+                pillText.className = `${isClassic ? 'text-amber-900' : 'text-slate-700'} text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase`;
+                subtitle.className = `font-script text-xl sm:text-2xl ${isClassic ? 'text-amber-800' : 'text-slate-600'} mt-1`;
+                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] ${isClassic ? 'text-amber-900/80' : 'text-slate-500'} mb-1`;
+                recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isClassic ? 'text-amber-950' : 'text-slate-900'} tracking-wide`;
+                msgBox.className = `${isClassic ? 'bg-amber-950/5 border-amber-900/20' : 'bg-slate-900/[0.03] border-slate-900/10'} border rounded-xl p-4 sm:p-5`;
+                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed ${isClassic ? 'text-stone-900' : 'text-slate-800'} text-justify font-normal indent-6`;
+                closing.className = `text-[11px] sm:text-xs ${isClassic ? 'text-amber-900/80' : 'text-slate-600'} italic mb-1`;
+                signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
+                yearEl.className = `text-[10px] ${isClassic ? 'text-amber-900/60' : 'text-slate-400'} tracking-widest uppercase mt-0.5`;
+            } else {
+                // Giao diện nền tối (Vũ trụ, Bảng đen, Lục bảo, Quang phổ...)
+                const isCyan = style.accent === 'cyan';
+                const isChalk = style.accent === 'chalk';
+                const borderOuterCol = isCyan ? 'border-sky-400/40' : (isChalk ? 'border-white/40' : 'border-amber-400/40');
+                const borderInnerCol = isCyan ? 'border-sky-300/20' : (isChalk ? 'border-white/20' : 'border-amber-300/20');
+                const cornerCol = isCyan ? 'border-sky-400' : (isChalk ? 'border-white/80' : 'border-amber-400');
+
+                borderOuter.className = `absolute inset-3 sm:inset-4 border ${borderOuterCol} rounded-xl pointer-events-none transition-colors duration-500`;
+                borderInner.className = `absolute inset-4 sm:inset-5 border ${borderInnerCol} rounded-lg pointer-events-none transition-colors duration-500`;
+                corners.forEach((c, idx) => {
+                    const pos = ['top-3 left-3 border-t-2 border-l-2 rounded-tl-xl', 'top-3 right-3 border-t-2 border-r-2 rounded-tr-xl', 'bottom-3 left-3 border-b-2 border-l-2 rounded-bl-xl', 'bottom-3 right-3 border-b-2 border-r-2 rounded-br-xl'][idx];
+                    c.className = `absolute ${pos} ${cornerCol} w-8 h-8 pointer-events-none transition-colors duration-500`;
+                });
+
+                pill.className = `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isCyan ? 'bg-sky-500/10 border-sky-400/30' : (isChalk ? 'bg-white/10 border-white/30' : 'bg-amber-500/10 border-amber-400/30')} border mb-2`;
+                pillText.className = `${isCyan ? 'text-sky-300' : (isChalk ? 'text-slate-100' : 'text-amber-300')} text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase`;
+                subtitle.className = `font-script text-xl sm:text-2xl ${isCyan ? 'text-sky-200/90' : (isChalk ? 'text-emerald-100/90' : 'text-amber-200/90')} mt-1`;
+                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1`;
+                recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isCyan ? 'text-sky-300' : (isChalk ? 'text-white' : 'text-amber-300')} tracking-wide drop-shadow`;
+                msgBox.className = `bg-white/5 backdrop-blur-[2px] ${isCyan ? 'border-sky-200/15' : (isChalk ? 'border-white/25' : 'border-amber-200/15')} border rounded-xl p-4 sm:p-5 shadow-inner`;
+                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light indent-6`;
+                closing.className = `text-[11px] sm:text-xs ${isCyan ? 'text-sky-200/80' : (isChalk ? 'text-slate-200/80' : 'text-amber-200/80')} italic mb-1`;
+                signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
+                yearEl.className = `text-[10px] text-slate-400 tracking-widest uppercase mt-0.5`;
+            }
+        }
+
+        // Xuất thiệp thành file ảnh PNG độ phân giải cao
+        function downloadCard() {
+            const cardElement = document.getElementById('greeting-card');
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span><span>Đang xuất ảnh...</span>`;
+            btn.disabled = true;
+
+            html2canvas(cardElement, {
+                scale: 3, // Tăng độ nét lên gấp 3 lần (chuẩn in ấn)
+                useCORS: true,
+                backgroundColor: null,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const fileName = currentCardId === 1 
+                    ? 'Thiep_20_11_Thay_Nguyen_Thanh_Tien_K32.png' 
+                    : 'Thiep_20_11_Thay_Huynh_Anh_Huy_K32.png';
+                
+                link.download = fileName;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showToast(`Đã tải xuống "${fileName}" thành công!`);
+            }).catch(err => {
+                console.error("Lỗi xuất ảnh:", err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showToast("Có lỗi xảy ra khi xuất ảnh, vui lòng thử lại!");
+            });
+        }
+
+        // Hiển thị thông báo nhỏ
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            const text = document.getElementById('toast-text');
+            text.textContent = msg;
+            box.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
