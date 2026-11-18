@@ -55,7 +55,111 @@
         .card-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
         }
-/* ... existing code ... -->
+
+        /* Tùy chỉnh thanh cuộn cho danh sách mẫu */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Thanh điều hướng phía trên -->
+    <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-serif font-bold text-xl shadow-lg">
+                    ψ
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-bold text-amber-300 tracking-wide">THIẾT KẾ THIỆP TRI ÂN 20/11</h1>
+                    <p class="text-xs text-slate-400">Tập thể Cao học Vật lý Lý thuyết & Vật lý Toán - K32</p>
+                </div>
+            </div>
+
+            <!-- Bộ chuyển đổi nhanh giữa 2 Thầy -->
+            <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-700/80">
+                <button id="btn-card-1" onclick="selectCard(1)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md">
+                    Thiệp 1: Thầy Nguyễn Thành Tiên
+                </button>
+                <button id="btn-card-2" onclick="selectCard(2)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 text-slate-300 hover:text-white">
+                    Thiệp 2: Thầy Huỳnh Anh Huy
+                </button>
+            </div>
+
+            <!-- Nút tải ảnh PNG -->
+            <button onclick="downloadCard()" id="download-btn" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-950/50 transition-all cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Tải Ảnh Thiệp (PNG)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Khu vực làm việc chính -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Cột trái: Khu vực hiển thị mẫu Thiệp (8 cột trên desktop) -->
+        <div class="lg:col-span-8 flex flex-col items-center justify-center">
+            <div class="mb-3 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-400">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Bản xem trước chuẩn tỷ lệ 4:5</span>
+                <span class="text-slate-600">|</span>
+                <span id="theme-badge" class="text-amber-300 font-medium">Mẫu: Vũ Trụ Lượng Tử</span>
+            </div>
+
+            <!-- KHUNG THIỆP CHÍNH (Dùng để xuất ra ảnh) -->
+            <div id="greeting-card" class="relative w-full max-w-[600px] aspect-[4/5] rounded-2xl overflow-hidden card-shadow transition-all duration-500 flex flex-col justify-between p-6 sm:p-10 select-none" style="background: radial-gradient(circle at top right, #1C2541, #0B132B 75%);">
+                
+                <!-- Lớp họa tiết Vật lý & Toán học nền (Render động theo từng mẫu) -->
+                <div id="card-svg-layer" class="absolute inset-0 pointer-events-none transition-opacity duration-500"></div>
+
+                <!-- Khung viền kép nghệ thuật -->
+                <div id="card-border-outer" class="absolute inset-3 sm:inset-4 border border-amber-400/40 rounded-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="card-border-inner" class="absolute inset-4 sm:inset-5 border border-amber-300/20 rounded-lg pointer-events-none transition-colors duration-500"></div>
+
+                <!-- 4 Góc trang trí tinh tế -->
+                <div id="corner-tl" class="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-400 rounded-tl-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-tr" class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-400 rounded-tr-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-bl" class="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-xl pointer-events-none transition-colors duration-500"></div>
+                <div id="corner-br" class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-xl pointer-events-none transition-colors duration-500"></div>
+
+                <!-- PHẦN 1: TIÊU ĐỀ & NGÀY 20/11 -->
+                <div class="relative z-10 text-center pt-1">
+                    <div id="card-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 mb-2 transition-colors duration-500">
+                        <span id="card-pill-text" class="text-amber-300 text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase transition-colors duration-500">Chào Mừng Ngày Nhà Giáo Việt Nam</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-3 my-0.5">
+                        <span id="line-left" class="h-[1px] w-10 sm:w-14 bg-gradient-to-r from-transparent to-amber-400"></span>
+                        <span id="card-date" class="font-serif text-3xl sm:text-4xl font-bold tracking-wider text-gold-gradient">20 • 11</span>
+                        <span id="line-right" class="h-[1px] w-10 sm:w-14 bg-gradient-to-l from-transparent to-amber-400"></span>
+                    </div>
+                    <p id="card-subtitle" class="font-script text-xl sm:text-2xl text-amber-200/90 mt-1 transition-colors duration-500">Tri Ân Người Dẫn Đường Tri Thức</p>
+                </div>
+
+                <!-- PHẦN 2: KÍNH GỬI THẦY & LỜI TRI ÂN -->
+                <div class="relative z-10 my-auto py-2">
+                    <div class="text-center mb-3 sm:mb-4">
+                        <p id="card-salutation" class="text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1 transition-colors duration-500">Kính gửi Thầy:</p>
+                        <h2 id="card-recipient" class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 tracking-wide drop-shadow transition-colors duration-500">
+                            Thầy Nguyễn Thành Tiên
+                        </h2>
+                        <div id="recipient-underline" class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-2"></div>
+                    </div>
+
                     <!-- Khung nội dung lời chúc -->
                     <div id="card-message-box" class="bg-white/5 border border-amber-200/15 rounded-xl p-4 sm:p-5 shadow-inner transition-colors duration-500">
                         <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light transition-colors duration-500">
