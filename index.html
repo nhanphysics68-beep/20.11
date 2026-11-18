@@ -33,27 +33,64 @@
         }
     </script>
     <style>
-        /* Hiệu ứng chữ ánh kim vàng (tương thích 100% với html2canvas khi xuất ảnh) */
+        /* Hiệu ứng chữ ánh kim vàng 3D dập nổi (tương thích 100% với html2canvas) */
         .text-gold-gradient {
-            color: #F3E5AB;
-            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.55), 0 1px 2px rgba(0, 0, 0, 0.6);
+            color: #FDE68A;
+            text-shadow: 
+                0 1px 0 #B45309,
+                0 2px 0 #92400E,
+                0 4px 12px rgba(212, 175, 55, 0.55),
+                0 6px 18px rgba(0, 0, 0, 0.75);
         }
 
-        /* Hiệu ứng chữ ánh xanh quang học */
+        /* Hiệu ứng chữ ánh xanh quang học 3D */
         .text-cyan-gradient {
-            color: #7DD3FC;
-            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.55), 0 1px 2px rgba(0, 0, 0, 0.6);
+            color: #BAE6FD;
+            text-shadow: 
+                0 1px 0 #0369A1,
+                0 2px 0 #075985,
+                0 4px 12px rgba(56, 189, 248, 0.55),
+                0 6px 18px rgba(0, 0, 0, 0.75);
         }
 
-        /* Hiệu ứng chữ nâu đồng cổ điển trên nền sáng */
+        /* Hiệu ứng chữ nâu đồng cổ điển khắc chìm trên nền sáng */
         .text-classic-gradient {
             color: #78350F;
-            text-shadow: 0 1px 2px rgba(180, 83, 9, 0.25);
+            text-shadow: 
+                0 1px 0 rgba(255, 255, 255, 0.85),
+                0 2px 4px rgba(120, 53, 15, 0.25);
         }
 
-        /* Hiệu ứng bóng đổ mượt mà cho thiệp */
+        /* Hiệu ứng bóng đổ đa tầng tạo chiều sâu 3D cho thiệp */
         .card-shadow {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+            box-shadow: 
+                0 30px 60px -15px rgba(0, 0, 0, 0.75),
+                0 15px 25px -10px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px rgba(255, 255, 255, 0.22),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.45);
+        }
+
+        /* Không gian phối cảnh 3D khi xem trên web */
+        .perspective-stage {
+            perspective: 1400px;
+        }
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+        }
+
+        /* Hiệu ứng nâng khối 3D cho khung lời chúc */
+        .elevated-box-dark {
+            box-shadow: 
+                0 14px 28px -6px rgba(0, 0, 0, 0.55),
+                0 4px 10px -2px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+        .elevated-box-light {
+            box-shadow: 
+                0 12px 24px -6px rgba(15, 23, 42, 0.12),
+                0 4px 8px -2px rgba(15, 23, 42, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
         }
 
         /* Tùy chỉnh thanh cuộn cho danh sách mẫu */
@@ -113,22 +150,25 @@
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         <!-- Cột trái: Khu vực hiển thị mẫu Thiệp (8 cột trên desktop) -->
-        <div class="lg:col-span-8 flex flex-col items-center justify-center">
+        <div class="lg:col-span-8 flex flex-col items-center justify-center perspective-stage">
             <div class="mb-3 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-400">
                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Bản xem trước chuẩn tỷ lệ 4:5</span>
+                <span>Hiệu ứng 3D chiều sâu nghệ thuật (4:5)</span>
                 <span class="text-slate-600">|</span>
                 <span id="theme-badge" class="text-amber-300 font-medium">Mẫu: Vũ Trụ Lượng Tử</span>
             </div>
 
             <!-- KHUNG THIỆP CHÍNH (Dùng để xuất ra ảnh) -->
-            <div id="greeting-card" class="relative w-full max-w-[600px] aspect-[4/5] rounded-2xl overflow-hidden card-shadow transition-all duration-500 flex flex-col justify-between p-6 sm:p-10 select-none" style="background: radial-gradient(circle at top right, #1C2541, #0B132B 75%);">
+            <div id="greeting-card" class="tilt-card relative w-full max-w-[600px] aspect-[4/5] rounded-2xl overflow-hidden card-shadow flex flex-col justify-between p-6 sm:p-9 select-none" style="background: radial-gradient(circle at 50% 25%, #233056, #0B132B 80%);">
                 
+                <!-- Lớp ánh sáng hội tụ 3D tạo chiều sâu không gian -->
+                <div id="card-depth-vignette" class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 50% 35%, rgba(255,255,255,0.07) 0%, transparent 58%, rgba(0,0,0,0.42) 100%);"></div>
+
                 <!-- Lớp họa tiết Vật lý & Toán học nền (Render động theo từng mẫu) -->
                 <div id="card-svg-layer" class="absolute inset-0 pointer-events-none transition-opacity duration-500"></div>
 
-                <!-- Khung viền kép nghệ thuật -->
-                <div id="card-border-outer" class="absolute inset-3 sm:inset-4 border border-amber-400/40 rounded-xl pointer-events-none transition-colors duration-500"></div>
+                <!-- Khung viền kép nghệ thuật dập nổi 3D -->
+                <div id="card-border-outer" class="absolute inset-3 sm:inset-4 border border-amber-400/45 rounded-xl pointer-events-none transition-colors duration-500" style="box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 6px rgba(0,0,0,0.35);"></div>
                 <div id="card-border-inner" class="absolute inset-4 sm:inset-5 border border-amber-300/20 rounded-lg pointer-events-none transition-colors duration-500"></div>
 
                 <!-- 4 Góc trang trí tinh tế -->
@@ -137,44 +177,54 @@
                 <div id="corner-bl" class="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-xl pointer-events-none transition-colors duration-500"></div>
                 <div id="corner-br" class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-xl pointer-events-none transition-colors duration-500"></div>
 
-                <!-- PHẦN 1: TIÊU ĐỀ & NGÀY 20/11 -->
-                <div class="relative z-10 text-center pt-1">
-                    <div id="card-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 mb-2 transition-colors duration-500">
-                        <span id="card-pill-text" class="text-amber-300 text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase transition-colors duration-500">Chào Mừng Ngày Nhà Giáo Việt Nam</span>
+                <!-- PHẦN 1: HUY HIỆU 3D, TIÊU ĐỀ & NGÀY 20/11 -->
+                <div class="relative z-10 text-center pt-0.5">
+                    <!-- Huy hiệu nguyên tử/lượng tử dập nổi 3D -->
+                    <div id="card-crest" class="w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center border border-amber-400/50 bg-gradient-to-b from-amber-300/20 to-amber-900/30" style="box-shadow: 0 6px 14px rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.35);">
+                        <svg id="card-crest-svg" class="w-6 h-6 text-amber-300" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="16" cy="16" rx="13" ry="5" transform="rotate(-30 16 16)" stroke="currentColor" stroke-width="1.3"/>
+                            <ellipse cx="16" cy="16" rx="13" ry="5" transform="rotate(30 16 16)" stroke="currentColor" stroke-width="1.3"/>
+                            <ellipse cx="16" cy="16" rx="13" ry="5" transform="rotate(90 16 16)" stroke="currentColor" stroke-width="1.1" stroke-dasharray="2 2"/>
+                            <circle cx="16" cy="16" r="2.3" fill="currentColor"/>
+                        </svg>
+                    </div>
+
+                    <div id="card-pill" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/35 mb-1.5 transition-colors duration-500" style="box-shadow: 0 3px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12);">
+                        <span id="card-pill-text" class="text-amber-200 text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase transition-colors duration-500">Chào Mừng Ngày Nhà Giáo Việt Nam</span>
                     </div>
                     <div class="flex items-center justify-center gap-3 my-0.5">
                         <span id="line-left" class="h-[1px] w-10 sm:w-14 bg-gradient-to-r from-transparent to-amber-400"></span>
                         <span id="card-date" class="font-serif text-3xl sm:text-4xl font-bold tracking-wider text-gold-gradient">20 • 11</span>
                         <span id="line-right" class="h-[1px] w-10 sm:w-14 bg-gradient-to-l from-transparent to-amber-400"></span>
                     </div>
-                    <p id="card-subtitle" class="font-script text-xl sm:text-2xl text-amber-200/90 mt-1 transition-colors duration-500">Tri Ân Người Dẫn Đường Tri Thức</p>
+                    <p id="card-subtitle" class="font-script text-xl sm:text-2xl text-amber-200/95 mt-0.5 transition-colors duration-500" style="text-shadow: 0 2px 6px rgba(0,0,0,0.4);">Tri Ân Người Dẫn Đường Tri Thức</p>
                 </div>
 
-                <!-- PHẦN 2: KÍNH GỬI THẦY & LỜI TRI ÂN -->
-                <div class="relative z-10 my-auto py-2">
-                    <div class="text-center mb-3 sm:mb-4">
-                        <p id="card-salutation" class="text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1 transition-colors duration-500">Kính gửi Thầy:</p>
-                        <h2 id="card-recipient" class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 tracking-wide drop-shadow transition-colors duration-500">
+                <!-- PHẦN 2: KÍNH GỬI THẦY & LỜI TRI ÂN NỔI KHỐI 3D -->
+                <div class="relative z-10 my-auto py-1.5">
+                    <div class="text-center mb-2.5 sm:mb-3.5">
+                        <p id="card-salutation" class="text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-0.5 transition-colors duration-500">Kính gửi Thầy:</p>
+                        <h2 id="card-recipient" class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 tracking-wide transition-colors duration-500" style="text-shadow: 0 2px 0 rgba(0,0,0,0.45), 0 6px 14px rgba(0,0,0,0.5);">
                             Thầy Nguyễn Thành Tiên
                         </h2>
-                        <div id="recipient-underline" class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-2"></div>
+                        <div id="recipient-underline" class="w-28 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-1.5"></div>
                     </div>
 
-                    <!-- Khung nội dung lời chúc -->
-                    <div id="card-message-box" class="bg-white/5 border border-amber-200/15 rounded-xl p-4 sm:p-5 shadow-inner transition-colors duration-500">
-                        <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light transition-colors duration-500">
+                    <!-- Khung nội dung lời chúc nâng nổi 3D -->
+                    <div id="card-message-box" class="bg-slate-950/35 border border-amber-200/25 rounded-xl p-4 sm:p-5 elevated-box-dark transition-colors duration-500">
+                        <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-normal transition-colors duration-500">
                             Nhân ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin gửi đến Thầy lời tri ân sâu sắc và chân thành nhất. Chúng em vô cùng trân quý sự nhiệt huyết của Thầy trong từng bài giảng, cách Thầy tận tâm tổ chức các buổi báo cáo nhóm và kiên nhẫn chỉnh sửa, hướng dẫn cho chúng em từ những lỗi nhỏ nhất trong từng công thức, lập luận. Sự nghiêm túc và tâm huyết của Thầy chính là ngọn lửa truyền cảm hứng giúp chúng em vững bước trên con đường nghiên cứu khoa học. Kính chúc Thầy luôn dồi dào sức khỏe, hạnh phúc và gặt hái nhiều thành công mới!
                         </p>
                     </div>
                 </div>
 
                 <!-- PHẦN 3: CHỮ KÝ TẬP THỂ LỚP -->
-                <div class="relative z-10 text-center pb-1">
-                    <p id="card-closing" class="text-[11px] sm:text-xs text-amber-200/80 italic mb-1 transition-colors duration-500">Kính chúc Thầy một mùa Hiến chương trọn vẹn niềm vui!</p>
+                <div class="relative z-10 text-center pb-0.5">
+                    <p id="card-closing" class="text-[11px] sm:text-xs text-amber-200/85 italic mb-1 transition-colors duration-500">Kính chúc Thầy một mùa Hiến chương trọn vẹn niềm vui!</p>
                     <p id="card-signature" class="font-serif font-bold text-xs sm:text-sm tracking-wider uppercase text-gold-gradient">
                         Tập thể Lớp Cao học Vật lý Lý thuyết & Vật lý Toán - Khóa 32
                     </p>
-                    <p id="card-year" class="text-[10px] text-slate-400 tracking-widest uppercase mt-0.5 transition-colors duration-500">Tháng 11 • Năm 2026</p>
+                    <p id="card-year" class="text-[10px] text-slate-300/80 tracking-widest uppercase mt-0.5 transition-colors duration-500">Tháng 11 • Năm 2026</p>
                 </div>
             </div>
         </div>
@@ -504,27 +554,27 @@
             Object.entries(cardStyles).forEach(([key, style]) => {
                 const btn = document.createElement('button');
                 btn.id = `theme-${key}`;
-                btn.onclick = () => changeTheme(key);
-                btn.className = "p-2.5 rounded-xl border border-slate-600/80 hover:border-amber-400/60 flex items-center gap-2.5 text-left transition-all bg-slate-900/60";
-                
-                btn.innerHTML = `
-                    <span class="w-6 h-6 rounded-lg shrink-0 border border-white/25 shadow-inner flex items-center justify-center" style="background: ${style.previewBg}">
-                        <span class="w-2 h-2 rounded-full" style="background-color: ${style.swatchColor}"></span>
-                    </span>
-                    <div class="min-w-0 flex-1">
-                        <div class="text-[11px] font-semibold text-slate-100 truncate">${style.name}</div>
-                        <div class="text-[9px] text-slate-400 truncate">${style.tag}</div>
-                    </div>
-                `;
-                grid.appendChild(btn);
-            });
-        }
-
-        // Khởi tạo giao diện ban đầu
+        // Khởi tạo giao diện ban đầu và hiệu ứng nghiêng 3D khi di chuột
         window.onload = function() {
             renderThemeButtons();
             selectCard(1);
+            init3DTiltEffect();
         };
+
+        // Hiệu ứng tương tác nghiêng 3D nhẹ nhàng trên màn hình (tự reset khi xuất ảnh)
+        function init3DTiltEffect() {
+            const card = document.getElementById('greeting-card');
+            card.addEventListener('mousemove', (e) => {
+                if (card.dataset.exporting === 'true') return;
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                card.style.transform = `rotateY(${x * 7}deg) rotateX(${-y * 7}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+            });
+        }
 
         // Chuyển đổi giữa Thiệp 1 và Thiệp 2
         function selectCard(id) {
@@ -624,14 +674,22 @@
             const closing = document.getElementById('card-closing');
             const signature = document.getElementById('card-signature');
             const yearEl = document.getElementById('card-year');
+            const crest = document.getElementById('card-crest');
+            const crestSvg = document.getElementById('card-crest-svg');
+            const vignette = document.getElementById('card-depth-vignette');
 
             dateEl.className = `font-serif text-3xl sm:text-4xl font-bold tracking-wider ${style.dateClass}`;
 
             if (style.isLight) {
-                // Giao diện nền sáng (Bản Thảo Cổ Điển / Trắng Sứ Tối Giản)
+                // Giao diện nền sáng 3D (Bản Thảo Cổ Điển / Trắng Sứ Tối Giản)
                 const isClassic = style.accent === 'classic';
                 const borderColor = isClassic ? 'border-amber-800/40' : 'border-slate-800/30';
                 const cornerColor = isClassic ? 'border-amber-800' : 'border-slate-800';
+
+                vignette.style.background = 'radial-gradient(circle at 50% 30%, rgba(255,255,255,0.45) 0%, transparent 65%, rgba(120,53,15,0.12) 100%)';
+                crest.className = `w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center border ${isClassic ? 'border-amber-800/40 bg-gradient-to-b from-amber-100 to-amber-200/70' : 'border-slate-400/50 bg-gradient-to-b from-white to-slate-200/80'}`;
+                crest.style.boxShadow = '0 4px 10px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.9)';
+                crestSvg.className = `w-6 h-6 ${isClassic ? 'text-amber-900' : 'text-slate-800'}`;
 
                 borderOuter.className = `absolute inset-3 sm:inset-4 border ${borderColor} rounded-xl pointer-events-none transition-colors duration-500`;
                 borderInner.className = `absolute inset-4 sm:inset-5 border ${borderColor} rounded-lg pointer-events-none transition-colors duration-500`;
@@ -640,23 +698,30 @@
                     c.className = `absolute ${pos} ${cornerColor} w-8 h-8 pointer-events-none transition-colors duration-500`;
                 });
 
-                pill.className = `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isClassic ? 'bg-amber-900/10 border-amber-800/30' : 'bg-slate-900/5 border-slate-800/20'} border mb-2`;
+                pill.className = `inline-flex items-center gap-2 px-3.5 py-1 rounded-full ${isClassic ? 'bg-amber-900/10 border-amber-800/30' : 'bg-slate-900/5 border-slate-800/20'} border mb-1.5`;
                 pillText.className = `${isClassic ? 'text-amber-900' : 'text-slate-700'} text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase`;
-                subtitle.className = `font-script text-xl sm:text-2xl ${isClassic ? 'text-amber-800' : 'text-slate-600'} mt-1`;
-                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] ${isClassic ? 'text-amber-900/80' : 'text-slate-500'} mb-1`;
+                subtitle.className = `font-script text-xl sm:text-2xl ${isClassic ? 'text-amber-800' : 'text-slate-600'} mt-0.5`;
+                subtitle.style.textShadow = '0 1px 0 rgba(255,255,255,0.8)';
+                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] ${isClassic ? 'text-amber-900/80' : 'text-slate-500'} mb-0.5`;
                 recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isClassic ? 'text-amber-950' : 'text-slate-900'} tracking-wide`;
-                msgBox.className = `${isClassic ? 'bg-amber-950/5 border-amber-900/20' : 'bg-slate-900/[0.03] border-slate-900/10'} border rounded-xl p-4 sm:p-5`;
+                recipient.style.textShadow = '0 1px 0 rgba(255,255,255,0.9), 0 3px 8px rgba(0,0,0,0.12)';
+                msgBox.className = `${isClassic ? 'bg-amber-50/70 border-amber-900/20' : 'bg-white/85 border-slate-900/10'} border rounded-xl p-4 sm:p-5 elevated-box-light`;
                 msgText.className = `text-xs sm:text-[13.5px] leading-relaxed ${isClassic ? 'text-stone-900' : 'text-slate-800'} text-justify font-normal`;
                 closing.className = `text-[11px] sm:text-xs ${isClassic ? 'text-amber-900/80' : 'text-slate-600'} italic mb-1`;
                 signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
                 yearEl.className = `text-[10px] ${isClassic ? 'text-amber-900/60' : 'text-slate-400'} tracking-widest uppercase mt-0.5`;
             } else {
-                // Giao diện nền tối (Vũ trụ, Bảng đen, Lục bảo, Quang phổ...)
+                // Giao diện nền tối 3D (Vũ trụ, Bảng đen, Lục bảo, Quang phổ...)
                 const isCyan = style.accent === 'cyan';
                 const isChalk = style.accent === 'chalk';
-                const borderOuterCol = isCyan ? 'border-sky-400/40' : (isChalk ? 'border-white/40' : 'border-amber-400/40');
+                const borderOuterCol = isCyan ? 'border-sky-400/45' : (isChalk ? 'border-white/45' : 'border-amber-400/45');
                 const borderInnerCol = isCyan ? 'border-sky-300/20' : (isChalk ? 'border-white/20' : 'border-amber-300/20');
-                const cornerCol = isCyan ? 'border-sky-400' : (isChalk ? 'border-white/80' : 'border-amber-400');
+                const cornerCol = isCyan ? 'border-sky-400' : (isChalk ? 'border-white/85' : 'border-amber-400');
+
+                vignette.style.background = 'radial-gradient(circle at 50% 35%, rgba(255,255,255,0.08) 0%, transparent 58%, rgba(0,0,0,0.45) 100%)';
+                crest.className = `w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center border ${isCyan ? 'border-sky-400/50 bg-gradient-to-b from-sky-300/20 to-sky-950/40' : (isChalk ? 'border-white/40 bg-white/10' : 'border-amber-400/50 bg-gradient-to-b from-amber-300/20 to-amber-950/40')}`;
+                crest.style.boxShadow = '0 6px 14px rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.35)';
+                crestSvg.className = `w-6 h-6 ${isCyan ? 'text-sky-300' : (isChalk ? 'text-white' : 'text-amber-300')}`;
 
                 borderOuter.className = `absolute inset-3 sm:inset-4 border ${borderOuterCol} rounded-xl pointer-events-none transition-colors duration-500`;
                 borderInner.className = `absolute inset-4 sm:inset-5 border ${borderInnerCol} rounded-lg pointer-events-none transition-colors duration-500`;
@@ -665,21 +730,23 @@
                     c.className = `absolute ${pos} ${cornerCol} w-8 h-8 pointer-events-none transition-colors duration-500`;
                 });
 
-                pill.className = `inline-flex items-center gap-2 px-3 py-1 rounded-full ${isCyan ? 'bg-sky-500/10 border-sky-400/30' : (isChalk ? 'bg-white/10 border-white/30' : 'bg-amber-500/10 border-amber-400/30')} border mb-2`;
-                pillText.className = `${isCyan ? 'text-sky-300' : (isChalk ? 'text-slate-100' : 'text-amber-300')} text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase`;
-                subtitle.className = `font-script text-xl sm:text-2xl ${isCyan ? 'text-sky-200/90' : (isChalk ? 'text-emerald-100/90' : 'text-amber-200/90')} mt-1`;
-                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1`;
-                recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isCyan ? 'text-sky-300' : (isChalk ? 'text-white' : 'text-amber-300')} tracking-wide drop-shadow`;
-                msgBox.className = `bg-white/5 ${isCyan ? 'border-sky-200/15' : (isChalk ? 'border-white/25' : 'border-amber-200/15')} border rounded-xl p-4 sm:p-5 shadow-inner`;
-                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light`;
-                closing.className = `text-[11px] sm:text-xs ${isCyan ? 'text-sky-200/80' : (isChalk ? 'text-slate-200/80' : 'text-amber-200/80')} italic mb-1`;
+                pill.className = `inline-flex items-center gap-2 px-3.5 py-1 rounded-full ${isCyan ? 'bg-sky-500/15 border-sky-400/35' : (isChalk ? 'bg-white/10 border-white/30' : 'bg-amber-500/15 border-amber-400/35')} border mb-1.5`;
+                pillText.className = `${isCyan ? 'text-sky-200' : (isChalk ? 'text-slate-100' : 'text-amber-200')} text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase`;
+                subtitle.className = `font-script text-xl sm:text-2xl ${isCyan ? 'text-sky-200/95' : (isChalk ? 'text-emerald-100/95' : 'text-amber-200/95')} mt-0.5`;
+                subtitle.style.textShadow = '0 2px 6px rgba(0,0,0,0.45)';
+                salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-0.5`;
+                recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isCyan ? 'text-sky-300' : (isChalk ? 'text-white' : 'text-amber-300')} tracking-wide`;
+                recipient.style.textShadow = '0 2px 0 rgba(0,0,0,0.5), 0 6px 14px rgba(0,0,0,0.55)';
+                msgBox.className = `bg-slate-950/35 ${isCyan ? 'border-sky-200/25' : (isChalk ? 'border-white/25' : 'border-amber-200/25')} border rounded-xl p-4 sm:p-5 elevated-box-dark`;
+                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-normal`;
+                closing.className = `text-[11px] sm:text-xs ${isCyan ? 'text-sky-200/85' : (isChalk ? 'text-slate-200/85' : 'text-amber-200/85')} italic mb-1`;
                 signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
-                yearEl.className = `text-[10px] text-slate-400 tracking-widest uppercase mt-0.5`;
+                yearEl.className = `text-[10px] text-slate-300/80 tracking-widest uppercase mt-0.5`;
             }
         }
 
-        // Xuất thiệp thành file ảnh PNG độ phân giải cao
-        function downloadCard() {
+        // Xuất thiệp thành file ảnh PNG độ phân giải cao (Chuẩn xác 100% từng chi tiết)
+        async function downloadCard() {
             const cardElement = document.getElementById('greeting-card');
             const btn = document.getElementById('download-btn');
             const originalText = btn.innerHTML;
@@ -687,12 +754,38 @@
             btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span><span>Đang xuất ảnh...</span>`;
             btn.disabled = true;
 
-            html2canvas(cardElement, {
-                scale: 3, // Tăng độ nét lên gấp 3 lần (chuẩn in ấn)
-                useCORS: true,
-                backgroundColor: null,
-                logging: false
-            }).then(canvas => {
+            try {
+                // Đợi toàn bộ Google Fonts tải xong hoàn toàn trước khi chụp
+                await document.fonts.ready;
+
+                // Khóa trạng thái phẳng 2D chuẩn xác 600x750px để ảnh xuất ra không bị méo phối cảnh hoặc lệch tỷ lệ trên mobile/desktop
+                cardElement.dataset.exporting = 'true';
+                const prevTransform = cardElement.style.transform;
+                const prevTransition = cardElement.style.transition;
+                cardElement.style.transition = 'none';
+                cardElement.style.transform = 'none';
+
+                const canvas = await html2canvas(cardElement, {
+                    scale: 3, // Độ phân giải siêu nét 1800x2250px
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        const clonedCard = clonedDoc.getElementById('greeting-card');
+                        // Cố định kích thước chuẩn 600x750px trên bản sao để xuất ảnh đồng nhất trên mọi màn hình
+                        clonedCard.style.width = '600px';
+                        clonedCard.style.height = '750px';
+                        clonedCard.style.maxWidth = '600px';
+                        clonedCard.style.transform = 'none';
+                        clonedCard.style.borderRadius = '16px';
+                    }
+                });
+
+                // Khôi phục trạng thái tương tác trên web
+                cardElement.style.transform = prevTransform;
+                cardElement.style.transition = prevTransition;
+                cardElement.dataset.exporting = 'false';
+
                 const link = document.createElement('a');
                 const fileName = currentCardId === 1 
                     ? 'Thiep_20_11_Thay_Nguyen_Thanh_Tien_K32.png' 
@@ -704,13 +797,14 @@
 
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                showToast(`Đã tải xuống "${fileName}" thành công!`);
-            }).catch(err => {
+                showToast(`Đã tải xuống "${fileName}" chuẩn nét!`);
+            } catch (err) {
                 console.error("Lỗi xuất ảnh:", err);
+                cardElement.dataset.exporting = 'false';
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 showToast("Có lỗi xảy ra khi xuất ảnh, vui lòng thử lại!");
-            });
+            }
         }
 
         // Hiển thị thông báo nhỏ
