@@ -33,138 +33,32 @@
         }
     </script>
     <style>
-        /* Hiệu ứng ánh kim vàng cho chữ (nền tối) */
+        /* Hiệu ứng chữ ánh kim vàng (tương thích 100% với html2canvas khi xuất ảnh) */
         .text-gold-gradient {
-            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA8218 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #F3E5AB;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.55), 0 1px 2px rgba(0, 0, 0, 0.6);
         }
 
-        /* Hiệu ứng ánh xanh/bạc quang học */
+        /* Hiệu ứng chữ ánh xanh quang học */
         .text-cyan-gradient {
-            background: linear-gradient(135deg, #E0F2FE 0%, #38BDF8 50%, #0284C7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #7DD3FC;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.55), 0 1px 2px rgba(0, 0, 0, 0.6);
         }
 
-        /* Hiệu ứng chữ cho nền sáng (Cổ điển / Tối giản) */
+        /* Hiệu ứng chữ nâu đồng cổ điển trên nền sáng */
         .text-classic-gradient {
-            background: linear-gradient(135deg, #78350F 0%, #B45309 50%, #451A03 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #78350F;
+            text-shadow: 0 1px 2px rgba(180, 83, 9, 0.25);
         }
 
         /* Hiệu ứng bóng đổ mượt mà cho thiệp */
         .card-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
         }
-
-        /* Tùy chỉnh thanh cuộn */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 3px;
-        }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-800 font-sans min-h-screen flex flex-col">
-
-    <!-- Thanh điều hướng & Công cụ -->
-    <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
-                    20/11
-                </div>
-                <div>
-                    <h1 class="text-white font-serif font-bold text-base sm:text-lg tracking-wide">Studio Thiết Kế Thiệp Tri Ân</h1>
-                    <p class="text-slate-400 text-xs">Lớp Cao học Vật lý Lý thuyết & Vật lý Toán - Khóa 32</p>
-                </div>
-            </div>
-
-            <!-- Bộ chọn Thiệp -->
-            <div class="flex items-center bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-                <button id="btn-card-1" onclick="selectCard(1)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md">
-                    1. Thiệp Thầy Nguyễn Thành Tiên
-                </button>
-                <button id="btn-card-2" onclick="selectCard(2)" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 text-slate-300 hover:text-white">
-                    2. Thiệp Thầy Huỳnh Anh Huy
-                </button>
-            </div>
-
-            <!-- Nút Tải Ảnh -->
-            <button onclick="downloadCard()" id="download-btn" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg shadow-emerald-900/30 active:scale-95">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span>Tải Ảnh Thiệp (PNG)</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Khu vực chính: Xem trước Thiệp & Bảng chỉnh sửa -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        <!-- Cột trái: Khu vực hiển thị Thiệp (8 cột trên desktop) -->
-        <div class="lg:col-span-8 flex flex-col items-center justify-center bg-slate-800/40 rounded-3xl p-4 sm:p-8 border border-slate-700/50">
-            
-            <div class="mb-4 flex items-center justify-between w-full max-w-2xl text-xs text-slate-400">
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Bản xem trước chuẩn in ấn & gửi điện tử (Tỷ lệ 4:5)
-                </span>
-                <span id="theme-badge" class="px-2.5 py-1 rounded-full bg-slate-800 text-amber-400 border border-amber-500/20">
-                    Chủ đề: Vũ Trụ Lượng Tử & Ánh Kim
-                </span>
-            </div>
-
-            <!-- KHUNG THIỆP CHÍNH (Sẽ được chụp lại để xuất ảnh) -->
-            <div id="greeting-card" class="relative w-full max-w-[600px] aspect-[4/5] rounded-2xl overflow-hidden card-shadow transition-all duration-500 select-none bg-[#0B132B] text-white flex flex-col justify-between p-6 sm:p-10">
-                
-                <!-- Họa tiết nền Vector động theo từng phong cách Vật lý -->
-                <div id="card-svg-layer" class="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500"></div>
-
-                <!-- Khung viền kép nghệ thuật bên trong -->
-                <div id="card-border-outer" class="absolute inset-3 sm:inset-4 border border-amber-400/40 rounded-xl pointer-events-none transition-colors duration-500"></div>
-                <div id="card-border-inner" class="absolute inset-4 sm:inset-5 border border-amber-300/20 rounded-lg pointer-events-none transition-colors duration-500"></div>
-
-                <!-- Góc trang trí hoa văn tinh tế -->
-                <div id="corner-tl" class="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-400 rounded-tl-xl pointer-events-none transition-colors duration-500"></div>
-                <div id="corner-tr" class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-400 rounded-tr-xl pointer-events-none transition-colors duration-500"></div>
-                <div id="corner-bl" class="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-xl pointer-events-none transition-colors duration-500"></div>
-                <div id="corner-br" class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-xl pointer-events-none transition-colors duration-500"></div>
-
-                <!-- PHẦN 1: HEADER THIỆP -->
-                <div class="relative z-10 text-center pt-2">
-                    <div id="card-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 mb-2 transition-colors duration-500">
-                        <span id="card-pill-text" class="text-amber-300 text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase">Chào Mừng Ngày Nhà Giáo Việt Nam</span>
-                    </div>
-                    <div class="flex items-center justify-center gap-3">
-                        <span id="card-line-l" class="h-[1px] w-8 sm:w-12 bg-gradient-to-r from-transparent to-amber-400"></span>
-                        <h2 id="card-date" class="font-serif text-3xl sm:text-4xl font-bold text-gold-gradient tracking-wider">20 • 11</h2>
-                        <span id="card-line-r" class="h-[1px] w-8 sm:w-12 bg-gradient-to-l from-transparent to-amber-400"></span>
-                    </div>
-                    <p id="card-subtitle" class="font-script text-xl sm:text-2xl text-amber-200/90 mt-1 transition-colors duration-500">Tri Ân Người Dẫn Đường Tri Thức</p>
-                </div>
-
-                <!-- PHẦN 2: KÍNH TẶNG & LỜI CHÚC CHÍNH -->
-                <div class="relative z-10 my-auto py-3 px-2 sm:px-4 flex flex-col justify-center">
-                    <div class="text-center mb-3">
-                        <p id="card-salutation" class="text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1 transition-colors duration-500">Kính gửi Thầy:</p>
-                        <h3 id="card-recipient" class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 tracking-wide drop-shadow transition-colors duration-500">
-                            Thầy Nguyễn Thành Tiên
-                        </h3>
-                        <div id="card-divider" class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-2"></div>
-                    </div>
-
+/* ... existing code ... -->
                     <!-- Khung nội dung lời chúc -->
-                    <div id="card-message-box" class="bg-white/5 backdrop-blur-[2px] border border-amber-200/15 rounded-xl p-4 sm:p-5 shadow-inner transition-colors duration-500">
-                        <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light indent-6 transition-colors duration-500">
+                    <div id="card-message-box" class="bg-white/5 border border-amber-200/15 rounded-xl p-4 sm:p-5 shadow-inner transition-colors duration-500">
+                        <p id="card-message" class="text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light transition-colors duration-500">
                             Nhân ngày Nhà giáo Việt Nam 20/11, tập thể lớp Cao học Vật lý lý thuyết và Vật lý toán Khóa 32 xin gửi đến Thầy lời tri ân sâu sắc và chân thành nhất. Chúng em vô cùng trân quý sự nhiệt huyết của Thầy trong từng bài giảng, cách Thầy tận tâm tổ chức các buổi báo cáo nhóm và kiên nhẫn chỉnh sửa, hướng dẫn cho chúng em từ những lỗi nhỏ nhất trong từng công thức, lập luận. Sự nghiêm túc và tâm huyết của Thầy chính là ngọn lửa truyền cảm hứng giúp chúng em vững bước trên con đường nghiên cứu khoa học. Kính chúc Thầy luôn dồi dào sức khỏe, hạnh phúc và gặt hái nhiều thành công mới!
                         </p>
                     </div>
@@ -372,7 +266,7 @@
 
         // Hàm tạo họa tiết SVG chuyên ngành Vật lý tương ứng với từng phong cách
         function getPhysicsSVG(type, strokeColor) {
-            const commonAttrs = `class="w-full h-full opacity-20" viewBox="0 0 600 750" fill="none" xmlns="http://www.w3.org/2000/svg"`;
+            const commonAttrs = `class="w-full h-full opacity-30" viewBox="0 0 600 750" fill="none" xmlns="http://www.w3.org/2000/svg"`;
             switch (type) {
                 case 'quantum':
                     return `<svg ${commonAttrs}>
@@ -648,7 +542,7 @@
                 salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] ${isClassic ? 'text-amber-900/80' : 'text-slate-500'} mb-1`;
                 recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isClassic ? 'text-amber-950' : 'text-slate-900'} tracking-wide`;
                 msgBox.className = `${isClassic ? 'bg-amber-950/5 border-amber-900/20' : 'bg-slate-900/[0.03] border-slate-900/10'} border rounded-xl p-4 sm:p-5`;
-                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed ${isClassic ? 'text-stone-900' : 'text-slate-800'} text-justify font-normal indent-6`;
+                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed ${isClassic ? 'text-stone-900' : 'text-slate-800'} text-justify font-normal`;
                 closing.className = `text-[11px] sm:text-xs ${isClassic ? 'text-amber-900/80' : 'text-slate-600'} italic mb-1`;
                 signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
                 yearEl.className = `text-[10px] ${isClassic ? 'text-amber-900/60' : 'text-slate-400'} tracking-widest uppercase mt-0.5`;
@@ -672,8 +566,8 @@
                 subtitle.className = `font-script text-xl sm:text-2xl ${isCyan ? 'text-sky-200/90' : (isChalk ? 'text-emerald-100/90' : 'text-amber-200/90')} mt-1`;
                 salutation.className = `text-xs sm:text-sm uppercase tracking-[0.15em] text-slate-300 mb-1`;
                 recipient.className = `font-serif text-2xl sm:text-3xl font-bold ${isCyan ? 'text-sky-300' : (isChalk ? 'text-white' : 'text-amber-300')} tracking-wide drop-shadow`;
-                msgBox.className = `bg-white/5 backdrop-blur-[2px] ${isCyan ? 'border-sky-200/15' : (isChalk ? 'border-white/25' : 'border-amber-200/15')} border rounded-xl p-4 sm:p-5 shadow-inner`;
-                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light indent-6`;
+                msgBox.className = `bg-white/5 ${isCyan ? 'border-sky-200/15' : (isChalk ? 'border-white/25' : 'border-amber-200/15')} border rounded-xl p-4 sm:p-5 shadow-inner`;
+                msgText.className = `text-xs sm:text-[13.5px] leading-relaxed text-slate-100 text-justify font-light`;
                 closing.className = `text-[11px] sm:text-xs ${isCyan ? 'text-sky-200/80' : (isChalk ? 'text-slate-200/80' : 'text-amber-200/80')} italic mb-1`;
                 signature.className = `font-serif font-bold text-xs sm:text-sm tracking-wider uppercase ${style.dateClass}`;
                 yearEl.className = `text-[10px] text-slate-400 tracking-widest uppercase mt-0.5`;
